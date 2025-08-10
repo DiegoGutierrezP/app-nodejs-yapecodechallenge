@@ -1,17 +1,21 @@
+import { Inject, Logger, NotFoundException } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
-import { GetTransactionByExternalIdQuery } from './get-transaction-by-external-id.query copy';
+import { Transaction } from 'apps/transaction/src/domain/entities';
+import { GetTransactionByExternalIdQuery } from './get-transaction-by-external-id.query';
 import {
   ITransactionRepository,
   TRANSACTION_REPOSITORY,
 } from 'apps/transaction/src/domain/repositories';
-import { Inject, NotFoundException } from '@nestjs/common';
 import { GetTransactionDto } from '../../../dtos';
-import { Transaction } from 'apps/transaction/src/domain/entities';
 
 @QueryHandler(GetTransactionByExternalIdQuery)
 export class GetTransactionByExternalIdQueryHandler
   implements IQueryHandler<GetTransactionByExternalIdQuery>
 {
+  private readonly logger = new Logger(
+    GetTransactionByExternalIdQueryHandler.name,
+  );
+
   constructor(
     @Inject(TRANSACTION_REPOSITORY)
     private readonly transactionRepository: ITransactionRepository,
@@ -20,15 +24,24 @@ export class GetTransactionByExternalIdQueryHandler
   async execute(
     query: GetTransactionByExternalIdQuery,
   ): Promise<GetTransactionDto> {
+    this.logger.log(
+      `Fetching transaction with externalId: ${query.externalId}`,
+    );
+
     const transaction = await this.transactionRepository.findByExternalId(
       query.externalId,
     );
 
     if (!transaction) {
+      this.logger.warn(
+        `Transaction with external id ${query.externalId} not found`,
+      );
       throw new NotFoundException(
         `Transaction with external id: ${query.externalId} not found`,
       );
     }
+
+    this.logger.log(`Transaction found: ${transaction.transactionExternalId}`);
 
     return this.mapTransactionToDto(transaction);
   }

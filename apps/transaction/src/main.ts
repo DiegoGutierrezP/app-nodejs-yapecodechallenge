@@ -4,6 +4,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { AllExceptionFilter } from './presentation/filters/all-exception.filter';
 import 'dotenv/config';
 import { Transport } from '@nestjs/microservices';
+import { envs } from 'apps/anti-fraud/src/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -13,7 +14,7 @@ async function bootstrap() {
     options: {
       client: {
         clientId: 'transaction',
-        brokers: ['localhost:9092'],
+        brokers: [envs.kafkaBroker],
       },
       consumer: {
         groupId: 'transaction-consumer',

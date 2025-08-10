@@ -1,4 +1,4 @@
-import { BadRequestException, Inject } from '@nestjs/common';
+import { BadRequestException, Inject, Logger } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import * as crypto from 'crypto';
 import { SaveTransactionCommand } from './save-transaction.command';
@@ -19,6 +19,10 @@ import {
 export class SaveTransactionCommandHandler
   implements ICommandHandler<SaveTransactionCommand>
 {
+  private readonly logger = new Logger(SaveTransactionCommandHandler.name);
+  private readonly ANTI_FRAUD_TRANSACTION_CREATED_TOPIC =
+    'anti-fraud.transaction-created';
+
   constructor(
     @Inject(TRANSACTION_REPOSITORY)
     private readonly transactionRepository: ITransactionRepository,
@@ -29,11 +33,14 @@ export class SaveTransactionCommandHandler
   ) {}
 
   async execute({ request }: SaveTransactionCommand) {
+    this.logger.log(`Transaction creation process started`);
+
     const type = await this.transactionTypeRepository.findById(
       request.tranferTypeId,
     );
 
     if (!type) {
+      this.logger.warn(`Transaction type ${request.tranferTypeId} not found`);
       throw new BadRequestException(
         `Transaction type ${request.tranferTypeId} not found`,
       );
@@ -51,12 +58,21 @@ export class SaveTransactionCommandHandler
 
     await this.transactionRepository.save(transaction);
 
-    // call kafka event
-    this.kafkaProducerService.emitMessage('anti-fraud.transaction-created', {
-      transactionId: transaction.id,
-      transactionExternalId: transaction.transactionExternalId,
-      amount: transaction.value,
-    });
+    this.logger.log(`Transaction saved with externalId: ${externalId}`);
+
+    // emit kafka event (asynchronous)
+    this.kafkaProducerService.emitMessage(
+      this.ANTI_FRAUD_TRANSACTION_CREATED_TOPIC,
+      {
+        transactionId: transaction.id,
+        transactionExternalId: transaction.transactionExternalId,
+        amount: transaction.value,
+      },
+    );
+
+    this.logger.log(
+      `Kafka event emitted successfully: topic=${this.ANTI_FRAUD_TRANSACTION_CREATED_TOPIC}`,
+    );
 
     return {
       externalId,

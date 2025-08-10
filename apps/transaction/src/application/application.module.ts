@@ -10,6 +10,7 @@ import { AuthorizeTransactionCommandHandler } from './features/commands/authoriz
 @Module({
   imports: [
     CqrsModule.forRoot(),
+    // Layers
     PersistenceLayerModule,
     InfrastructureLayerModule,
   ],

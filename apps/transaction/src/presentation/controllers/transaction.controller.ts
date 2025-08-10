@@ -12,7 +12,7 @@ import {
 } from '../../application/dtos';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { SaveTransactionCommand } from '../../application/features/commands/save-transaction/save-transaction.command';
-import { GetTransactionByExternalIdQuery } from '../../application/features/queries/get-transaction/get-transaction-by-external-id.query copy';
+import { GetTransactionByExternalIdQuery } from '../../application/features/queries/get-transaction/get-transaction-by-external-id.query';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { AuthorizeTransactionCommand } from '../../application/features/commands/authorize-transaction/authorize-transaction.command';
 

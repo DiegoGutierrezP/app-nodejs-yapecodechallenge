@@ -7,6 +7,8 @@ import { TRANSACTION_SERVICE } from '../config';
 export class AntiFraudService {
   private readonly logger = new Logger(AntiFraudService.name);
 
+  private readonly TRANSACTION_AUTHORIZE_TOPIC = 'transaction.authorize';
+
   constructor(
     @Inject(TRANSACTION_SERVICE) private transactionClient: ClientKafka,
   ) {}
@@ -23,10 +25,14 @@ export class AntiFraudService {
         `Transaction ${payload.transactionExternalId}: authorize=${authorize}`,
       );
 
-      this.transactionClient.emit('transaction.authorize', {
+      this.transactionClient.emit(this.TRANSACTION_AUTHORIZE_TOPIC, {
         ...payload,
         authorize,
       });
+
+      this.logger.log(
+        `Kafka event emitted successfully: topic=${this.TRANSACTION_AUTHORIZE_TOPIC}`,
+      );
     } catch (error) {
       this.logger.error('Failed to emit authorization event', error);
     }
