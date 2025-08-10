@@ -16,4 +16,12 @@ export class TransactionRepository
   ) {
     super(repository);
   }
+
+  async findByExternalId(externalId: string): Promise<Transaction | null> {
+    return await this.repository.findOne({
+      where: {
+        transactionExternalId: externalId,
+      },
+    });
+  }
 }

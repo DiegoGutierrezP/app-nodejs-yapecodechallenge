@@ -2,9 +2,13 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { TransactionStatus } from '../constants';
+import { TransactionType } from './transaction-type.entity';
 
 @Entity({ name: 'transactions' })
 export class Transaction {
@@ -20,11 +24,15 @@ export class Transaction {
   @Column('varchar', { name: 'account_external_id_credit', nullable: false })
   accountExternalIdCredit: string;
 
-  @Column('int', { name: 'transfer_type_id', nullable: false })
-  transferTypeId: number;
+  @Column('int', { name: 'transaction_type_id', nullable: false })
+  transactionTypeId: number;
 
-  @Column('int', { name: 'transaction_status_id', nullable: false })
-  transactionStatusId: number;
+  @Column({
+    type: 'enum',
+    enum: TransactionStatus,
+    default: TransactionStatus.PENDING,
+  })
+  status: TransactionStatus;
 
   @Column('decimal', { name: 'value', nullable: false })
   value: number;
@@ -34,4 +42,12 @@ export class Transaction {
 
   @UpdateDateColumn({ name: 'updated_at', nullable: true })
   updatedAt?: Date;
+
+  // relations
+
+  @ManyToOne(() => TransactionType, (type) => type.transactions, {
+    eager: true,
+  })
+  @JoinColumn({ name: 'transaction_type_id' })
+  transactionType: TransactionType;
 }
