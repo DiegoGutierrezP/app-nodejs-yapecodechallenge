@@ -1,0 +1,16 @@
+{
+  "moduleFileExtensions": ["js", "json", "ts"],
+  "rootDir": "../../../..",
+  "testRegex": "apps/transaction/test/e2e/.*\\.e2e-spec\\.ts$",
+  "transform": {
+    "^.+\\.(t|j)s$": "ts-jest"
+  },
+  "moduleNameMapper": {
+    "^apps/(.*)$": "<rootDir>/apps/$1"
+  },
+  "collectCoverageFrom": [
+    "apps/transaction/src/**/*.(t|j)s"
+  ],
+  "coverageDirectory": "coverage/transaction-e2e",
+  "testEnvironment": "node"
+}

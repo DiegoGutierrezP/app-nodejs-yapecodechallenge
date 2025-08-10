@@ -18,7 +18,9 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e:anti-fraud": "jest --config apps/anti-fraud/test/e2e/jest-e2e.json",
-    "test:unit:anti-fraud": "jest --testPathPattern=apps/anti-fraud/test/unit"
+    "test:unit:anti-fraud": "jest --config apps/anti-fraud/test/unit/jest.unit.json",
+    "test:e2e:transaction": "jest --config apps/transaction/test/e2e/jest-e2e.json",
+    "test:unit:transaction": "jest --config apps/transaction/test/unit/jest.unit.json"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",

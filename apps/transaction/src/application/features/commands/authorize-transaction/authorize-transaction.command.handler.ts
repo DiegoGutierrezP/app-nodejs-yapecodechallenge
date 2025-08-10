@@ -52,6 +52,7 @@ export class AuthorizeTransactionCommandHandler
 
     return {
       externalId: transaction.transactionExternalId,
+      status: transaction.status,
     };
   }
 }

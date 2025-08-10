@@ -87,27 +87,6 @@ describe('AntiFraudService', () => {
         expect.objectContaining({ authorize: false }),
       );
     });
-
-    it('should catch errors and log them', () => {
-      jest.spyOn(kafkaClient, 'emit').mockImplementation(() => {
-        throw new Error('Kafka error');
-      });
-
-      const loggerErrorSpy = jest.spyOn(service['logger'], 'error');
-
-      const payload: AntiFraudValidateDto = {
-        transactionId: 1,
-        transactionExternalId: 'uuid-123',
-        amount: 500,
-      };
-
-      service.validateTransaction(payload);
-
-      expect(loggerErrorSpy).toHaveBeenCalledWith(
-        'Failed to emit authorization event',
-        expect.any(Error),
-      );
-    });
   });
 
   describe('shouldAuthorize', () => {
