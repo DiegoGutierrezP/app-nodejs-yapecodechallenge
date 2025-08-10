@@ -6,10 +6,15 @@ import {
   ParseUUIDPipe,
   Post,
 } from '@nestjs/common';
-import { SaveTransactionDto } from '../../application/dtos';
+import {
+  AuthorizeTransactionDto,
+  SaveTransactionDto,
+} from '../../application/dtos';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { SaveTransactionCommand } from '../../application/features/commands/save-transaction/save-transaction.command';
 import { GetTransactionByExternalIdQuery } from '../../application/features/queries/get-transaction/get-transaction-by-external-id.query copy';
+import { MessagePattern, Payload } from '@nestjs/microservices';
+import { AuthorizeTransactionCommand } from '../../application/features/commands/authorize-transaction/authorize-transaction.command';
 
 @Controller('transactions')
 export class TransactionController {
@@ -28,5 +33,10 @@ export class TransactionController {
     return this.queryBus.execute(
       new GetTransactionByExternalIdQuery(externalId),
     );
+  }
+
+  @MessagePattern('transaction.authorize')
+  authorizeTransaction(@Payload() dto: AuthorizeTransactionDto) {
+    return this.commandBus.execute(new AuthorizeTransactionCommand(dto));
   }
 }

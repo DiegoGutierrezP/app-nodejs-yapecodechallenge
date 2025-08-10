@@ -10,6 +10,7 @@ import {
 import * as crypto from 'crypto';
 import { Transaction } from 'apps/transaction/src/domain/entities';
 import { TransactionStatus } from 'apps/transaction/src/domain/constants';
+import { KafkaProducerService } from 'apps/transaction/src/infrastructure/kafka/kafka-producer.service';
 
 @CommandHandler(SaveTransactionCommand)
 export class SaveTransactionCommandHandler
@@ -20,6 +21,7 @@ export class SaveTransactionCommandHandler
     private readonly transactionRepository: ITransactionRepository,
     @Inject(TRANSACTION_TYPE_REPOSITORY)
     private readonly transactionTypeRepository: ITransactionTypeRepository,
+    private readonly kafkaProducerService: KafkaProducerService,
   ) {}
 
   async execute({ request }: SaveTransactionCommand) {
@@ -45,7 +47,12 @@ export class SaveTransactionCommandHandler
 
     await this.transactionRepository.save(transaction);
 
-    //TODO: call kafka event
+    // //TODO: call kafka event
+    this.kafkaProducerService.emitMessage('anti-fraud.validate', {
+      transactionId: transaction.id,
+      transactionExternalId: transaction.transactionExternalId,
+      value: transaction.value,
+    });
 
     return {
       externalId,

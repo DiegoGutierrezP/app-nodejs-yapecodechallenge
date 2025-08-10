@@ -25,4 +25,8 @@ export class KafkaProducerService implements OnModuleInit, OnModuleDestroy {
   async sendMessage(topic: string, message: any) {
     return await lastValueFrom(this.kafkaClient.send(topic, message));
   }
+
+  emitMessage(topic: string, message: any) {
+    this.kafkaClient.emit(topic, message);
+  }
 }
