@@ -24,3 +24,28 @@ services:
       KAFKA_JMX_PORT: 9991
     ports:
       - 9092:9092
+
+   # Transaction microservice
+  transaction:
+    build:
+      context: .  # Carpeta raíz del proyecto
+      dockerfile: ./apps/transaction/Dockerfile 
+    container_name: "transaction_service"
+    ports:
+      - "3001:3000"  # Puerto expuesto en el host
+    depends_on:
+      - postgres
+      - kafka
+    env_file:
+      - .env
+
+   # Anti-fraud microservice
+  anti-fraud:
+    build:
+      context: .  # Carpeta raíz del proyecto
+      dockerfile: ./apps/anti-fraud/Dockerfile 
+    container_name: "anti_fraud_service"
+    depends_on:
+      - kafka
+    env_file:
+      - .env

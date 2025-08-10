@@ -4,7 +4,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { AllExceptionFilter } from './presentation/filters/all-exception.filter';
 import 'dotenv/config';
 import { Transport } from '@nestjs/microservices';
-import { envs } from 'apps/anti-fraud/src/config';
+import { envs } from './shared/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
