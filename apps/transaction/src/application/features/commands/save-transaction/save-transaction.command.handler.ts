@@ -52,7 +52,7 @@ export class SaveTransactionCommandHandler
     await this.transactionRepository.save(transaction);
 
     // call kafka event
-    this.kafkaProducerService.emitMessage('anti-fraud.validate', {
+    this.kafkaProducerService.emitMessage('anti-fraud.transaction-created', {
       transactionId: transaction.id,
       transactionExternalId: transaction.transactionExternalId,
       amount: transaction.value,

@@ -7,8 +7,8 @@ import { AntiFraudValidateDto } from './dtos';
 export class AntiFraudController {
   constructor(private readonly antiFraudService: AntiFraudService) {}
 
-  @MessagePattern('anti-fraud.validate')
+  @MessagePattern('anti-fraud.transaction-created')
   async validateTransaction(@Payload() payload: AntiFraudValidateDto) {
-    this.antiFraudService.validate(payload);
+    this.antiFraudService.validateTransaction(payload);
   }
 }

@@ -8,7 +8,7 @@ export class AntiFraudService {
     @Inject('TRANSACTION_SERVICE') private transactionClient: ClientKafka,
   ) {}
 
-  validate(payload: AntiFraudValidateDto) {
+  validateTransaction(payload: AntiFraudValidateDto) {
     let authorize = false;
     if (payload.amount > 0 && payload.amount <= 1000) {
       authorize = true;
