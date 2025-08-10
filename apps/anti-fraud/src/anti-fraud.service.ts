@@ -1,22 +1,37 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { AntiFraudValidateDto } from './dtos';
 import { ClientKafka } from '@nestjs/microservices';
 
 @Injectable()
 export class AntiFraudService {
+  private readonly logger = new Logger(AntiFraudService.name);
+
   constructor(
     @Inject('TRANSACTION_SERVICE') private transactionClient: ClientKafka,
   ) {}
 
   validateTransaction(payload: AntiFraudValidateDto) {
-    let authorize = false;
-    if (payload.amount > 0 && payload.amount <= 1000) {
-      authorize = true;
-    }
+    try {
+      this.logger.log(
+        `Transaction validation started: externalId=${payload.transactionExternalId} `,
+      );
 
-    this.transactionClient.emit('transaction.authorize', {
-      ...payload,
-      authorize,
-    });
+      const authorize = this.shouldAuthorize(payload.amount);
+
+      this.logger.log(
+        `Transaction ${payload.transactionExternalId}: authorize=${authorize}`,
+      );
+
+      this.transactionClient.emit('transaction.authorize', {
+        ...payload,
+        authorize,
+      });
+    } catch (error) {
+      this.logger.error('Failed to emit authorization event', error);
+    }
+  }
+
+  private shouldAuthorize(amount: number) {
+    return amount > 0 && amount <= 1000;
   }
 }
