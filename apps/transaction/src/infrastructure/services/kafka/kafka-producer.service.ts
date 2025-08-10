@@ -1,12 +1,13 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { ClientKafka } from '@nestjs/microservices';
 import { IKafkaProducerService } from 'apps/transaction/src/application/contracts/services';
+import { ANTI_FRAUD_SERVICE } from 'apps/transaction/src/shared/config';
 import { lastValueFrom } from 'rxjs';
 
 @Injectable()
 export class KafkaProducerService implements IKafkaProducerService {
   constructor(
-    @Inject('ANTI_FRAUD_SERVICE')
+    @Inject(ANTI_FRAUD_SERVICE)
     private readonly kafkaClient: ClientKafka,
   ) {}
 

@@ -1,13 +1,14 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { AntiFraudValidateDto } from './dtos';
 import { ClientKafka } from '@nestjs/microservices';
+import { TRANSACTION_SERVICE } from './config';
 
 @Injectable()
 export class AntiFraudService {
   private readonly logger = new Logger(AntiFraudService.name);
 
   constructor(
-    @Inject('TRANSACTION_SERVICE') private transactionClient: ClientKafka,
+    @Inject(TRANSACTION_SERVICE) private transactionClient: ClientKafka,
   ) {}
 
   validateTransaction(payload: AntiFraudValidateDto) {

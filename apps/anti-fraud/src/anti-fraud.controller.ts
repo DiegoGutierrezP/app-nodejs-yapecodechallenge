@@ -8,7 +8,7 @@ export class AntiFraudController {
   constructor(private readonly antiFraudService: AntiFraudService) {}
 
   @MessagePattern('anti-fraud.transaction-created')
-  async validateTransaction(@Payload() payload: AntiFraudValidateDto) {
-    this.antiFraudService.validateTransaction(payload);
+  async validateTransaction(@Payload() message: AntiFraudValidateDto) {
+    this.antiFraudService.validateTransaction(message);
   }
 }

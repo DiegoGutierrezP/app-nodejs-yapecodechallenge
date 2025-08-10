@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AntiFraudModule } from './anti-fraud.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { ValidationPipe } from '@nestjs/common';
+import { envs } from './config';
 
 async function bootstrap() {
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
@@ -11,7 +12,7 @@ async function bootstrap() {
       options: {
         client: {
           clientId: 'anti-fraud',
-          brokers: ['localhost:9092'],
+          brokers: [envs.kafkaBroker],
         },
         consumer: {
           groupId: 'anti-fraud-consumer',

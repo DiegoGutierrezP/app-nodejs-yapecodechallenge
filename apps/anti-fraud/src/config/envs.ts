@@ -2,21 +2,11 @@ import 'dotenv/config';
 import * as joi from 'joi';
 
 interface EnvVars {
-  DB_HOST: string;
-  DB_PORT: number;
-  DB_USERNAME: string;
-  DB_PASSWORD: string;
-  DB_NAME: string;
   KAFKA_BROKER: string;
 }
 
 const envSchema = joi
   .object({
-    DB_HOST: joi.string().required(),
-    DB_PORT: joi.number().required(),
-    DB_USERNAME: joi.string().required(),
-    DB_PASSWORD: joi.string().required(),
-    DB_NAME: joi.string().required(),
     KAFKA_BROKER: joi.string().required(),
   })
   .unknown(true); //permite que haya otra variables "flotando"
@@ -30,10 +20,5 @@ if (error) {
 const envVars: EnvVars = value;
 
 export const envs = {
-  dbHost: envVars.DB_HOST,
-  dbPort: envVars.DB_PORT,
-  dbUsername: envVars.DB_USERNAME,
-  dbPassword: envVars.DB_PASSWORD,
-  dbName: envVars.DB_NAME,
   kafkaBroker: envVars.KAFKA_BROKER,
 };

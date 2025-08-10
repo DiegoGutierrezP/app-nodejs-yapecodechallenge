@@ -2,17 +2,18 @@ import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { KAFKA_PRODUCER_SERVICE } from 'apps/transaction/src/application/contracts/services';
 import { KafkaProducerService } from './kafka-producer.service';
+import { ANTI_FRAUD_SERVICE, envs } from 'apps/transaction/src/shared/config';
 
 @Module({
   imports: [
     ClientsModule.register([
       {
-        name: 'ANTI_FRAUD_SERVICE',
+        name: ANTI_FRAUD_SERVICE,
         transport: Transport.KAFKA,
         options: {
           client: {
             clientId: 'transaction',
-            brokers: ['localhost:9092'],
+            brokers: [envs.kafkaBroker],
           },
           consumer: {
             groupId: 'transaction-consumer',
