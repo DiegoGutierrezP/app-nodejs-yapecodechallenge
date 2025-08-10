@@ -1,16 +1,19 @@
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { SaveTransactionCommand } from './save-transaction.command';
 import { BadRequestException, Inject } from '@nestjs/common';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import * as crypto from 'crypto';
+import { SaveTransactionCommand } from './save-transaction.command';
+import { Transaction } from 'apps/transaction/src/domain/entities';
+import { TransactionStatus } from 'apps/transaction/src/domain/constants';
 import {
   ITransactionRepository,
   ITransactionTypeRepository,
   TRANSACTION_REPOSITORY,
   TRANSACTION_TYPE_REPOSITORY,
 } from 'apps/transaction/src/domain/repositories';
-import * as crypto from 'crypto';
-import { Transaction } from 'apps/transaction/src/domain/entities';
-import { TransactionStatus } from 'apps/transaction/src/domain/constants';
-import { KafkaProducerService } from 'apps/transaction/src/infrastructure/kafka/kafka-producer.service';
+import {
+  IKafkaProducerService,
+  KAFKA_PRODUCER_SERVICE,
+} from '../../../contracts/services';
 
 @CommandHandler(SaveTransactionCommand)
 export class SaveTransactionCommandHandler
@@ -21,7 +24,8 @@ export class SaveTransactionCommandHandler
     private readonly transactionRepository: ITransactionRepository,
     @Inject(TRANSACTION_TYPE_REPOSITORY)
     private readonly transactionTypeRepository: ITransactionTypeRepository,
-    private readonly kafkaProducerService: KafkaProducerService,
+    @Inject(KAFKA_PRODUCER_SERVICE)
+    private readonly kafkaProducerService: IKafkaProducerService,
   ) {}
 
   async execute({ request }: SaveTransactionCommand) {
