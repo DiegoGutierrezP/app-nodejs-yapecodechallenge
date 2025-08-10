@@ -8,6 +8,7 @@ import {
   TRANSACTION_TYPE_REPOSITORY,
 } from '../domain/repositories';
 import { TransactionTypeRepository } from './repositories';
+import { SeedService } from './database/seed.service';
 
 @Module({
   imports: [
@@ -24,7 +25,8 @@ import { TransactionTypeRepository } from './repositories';
       provide: TRANSACTION_TYPE_REPOSITORY,
       useClass: TransactionTypeRepository,
     },
+    SeedService,
   ],
-  exports: [TRANSACTION_REPOSITORY, TRANSACTION_TYPE_REPOSITORY],
+  exports: [TRANSACTION_REPOSITORY, TRANSACTION_TYPE_REPOSITORY, SeedService],
 })
 export class PersistenceLayerModule {}

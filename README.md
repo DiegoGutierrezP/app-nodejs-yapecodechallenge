@@ -49,3 +49,4 @@ Every transaction with a value greater than 1000 should be rejected.
 2. Copy .env.example and rename to .env
 3. Start the services: `docker compose up --build`
 4. Import Postman collection [Transactions API Collection](./yape-challenge.postman_collection.json)
+5. Run the SEED API to populate transaction_types.
