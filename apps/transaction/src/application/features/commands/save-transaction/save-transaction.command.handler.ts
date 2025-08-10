@@ -47,11 +47,11 @@ export class SaveTransactionCommandHandler
 
     await this.transactionRepository.save(transaction);
 
-    // //TODO: call kafka event
+    // call kafka event
     this.kafkaProducerService.emitMessage('anti-fraud.validate', {
       transactionId: transaction.id,
       transactionExternalId: transaction.transactionExternalId,
-      value: transaction.value,
+      amount: transaction.value,
     });
 
     return {

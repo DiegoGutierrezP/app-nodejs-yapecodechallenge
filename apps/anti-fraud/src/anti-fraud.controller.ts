@@ -1,12 +1,14 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { AntiFraudService } from './anti-fraud.service';
+import { MessagePattern, Payload } from '@nestjs/microservices';
+import { AntiFraudValidateDto } from './dtos';
 
 @Controller()
 export class AntiFraudController {
   constructor(private readonly antiFraudService: AntiFraudService) {}
 
-  @Get()
-  getHello(): string {
-    return this.antiFraudService.getHello();
+  @MessagePattern('anti-fraud.validate')
+  async validateTransaction(@Payload() payload: AntiFraudValidateDto) {
+    this.antiFraudService.validate(payload);
   }
 }

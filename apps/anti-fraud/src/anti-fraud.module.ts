@@ -1,9 +1,26 @@
 import { Module } from '@nestjs/common';
 import { AntiFraudController } from './anti-fraud.controller';
 import { AntiFraudService } from './anti-fraud.service';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
-  imports: [],
+  imports: [
+    ClientsModule.register([
+      {
+        name: 'TRANSACTION_SERVICE',
+        transport: Transport.KAFKA,
+        options: {
+          client: {
+            clientId: 'anti-fraud',
+            brokers: ['localhost:9092'],
+          },
+          consumer: {
+            groupId: 'anti-fraud-consumer',
+          },
+        },
+      },
+    ]),
+  ],
   controllers: [AntiFraudController],
   providers: [AntiFraudService],
 })
