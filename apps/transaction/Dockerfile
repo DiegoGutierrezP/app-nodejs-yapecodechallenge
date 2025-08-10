@@ -1,24 +1,16 @@
-# Usa una imagen de Node.js como base
-FROM node:18-alpine
-
-# Establecer el directorio de trabajo dentro del contenedor
-WORKDIR /app
-
-# Copiar los archivos package.json y package-lock.json desde la carpeta principal
+# --- Build phase ---
+FROM node:18.20-alpine AS builder
+WORKDIR /usr/src/app
 COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build transaction
 
-# Instalar las dependencias
-RUN npm install
-
-# Copiar el archivo tsconfig.json y el código del microservicio
-COPY tsconfig.json ./
-COPY ./apps/transaction ./apps/transaction
-
-# Compilar la aplicación NestJS
-# RUN npm run build
-
-# Exponer el puerto en el que la aplicación escucha (3000 por defecto en NestJS)
-EXPOSE 3000
-
-# Comando para ejecutar la aplicación
-CMD ["npm", "run", "start"]
+# --- Production phase ---
+FROM node:18.20-alpine
+WORKDIR /usr/src/app
+COPY --from=builder /usr/src/app/dist ./dist
+COPY --from=builder /usr/src/app/package.json ./
+COPY --from=builder /usr/src/app/node_modules ./node_modules
+USER node
+CMD ["node", "dist/apps/transaction/main"]
