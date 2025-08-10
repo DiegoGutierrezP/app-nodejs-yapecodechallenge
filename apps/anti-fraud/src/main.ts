@@ -1,12 +1,12 @@
 import { NestFactory } from '@nestjs/core';
-import { AntiFraudModule } from './anti-fraud.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { ValidationPipe } from '@nestjs/common';
 import { envs } from './config';
+import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
-    AntiFraudModule,
+    AppModule,
     {
       transport: Transport.KAFKA,
       options: {

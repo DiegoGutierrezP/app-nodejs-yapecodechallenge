@@ -1,7 +1,7 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { AntiFraudValidateDto } from './dtos';
+import { AntiFraudValidateDto } from '../dtos';
 import { ClientKafka } from '@nestjs/microservices';
-import { TRANSACTION_SERVICE } from './config';
+import { TRANSACTION_SERVICE } from '../config';
 
 @Injectable()
 export class AntiFraudService {

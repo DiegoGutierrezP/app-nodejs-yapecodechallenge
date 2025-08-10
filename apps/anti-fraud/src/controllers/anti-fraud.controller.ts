@@ -1,7 +1,7 @@
 import { Controller } from '@nestjs/common';
-import { AntiFraudService } from './anti-fraud.service';
+import { AntiFraudService } from '../services/anti-fraud.service';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { AntiFraudValidateDto } from './dtos';
+import { AntiFraudValidateDto } from '../dtos';
 
 @Controller()
 export class AntiFraudController {
